@@ -4,7 +4,7 @@ import InverseKinematicsSymbolic as iks
 import warnings
 
 
-class CalulateInverseKinematics:
+class InverseKinematics:
 
     def __init__(self):
         th_1 = sp.Symbol("θ1")
@@ -120,9 +120,9 @@ def main():
                 [0,1,0,270],
                 [0,0,1,15],
                 [0,0,0,1]])
-    ned = CalulateInverseKinematics()   
+    ned = InverseKinematics()   
     
-    for x in range(100):
+    for x in range(1):
         print(ned.nedInverseKinematics(t_m))
         
 
