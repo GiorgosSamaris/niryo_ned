@@ -28,12 +28,12 @@ class CalulateInverseKinematicSymbolic:
 
         phi = sp.Symbol("φ")
 
-        self.h_0_1 = self.HMT(th_1+sp.pi/2, sp.pi/2, 0,a_1)
-        self.h_1_2 = self.HMT(th_2+sp.pi/2, 0, a_2,0)
-        self.h_2_3 = self.HMT(th_3, sp.pi/2, a_4,0)
-        self.h_3_4 = self.HMT(th_4, -sp.pi/2, 0,a_5)
-        self.h_4_5 = self.HMT(th_5, sp.pi/2, 0,0)
-        self.h_5_6 = self.HMT(th_6, 0, 0,a_6)
+        self.h_0_1 = self.HTM(th_1+sp.pi/2, sp.pi/2, 0,a_1)
+        self.h_1_2 = self.HTM(th_2+sp.pi/2, 0, a_2,0)
+        self.h_2_3 = self.HTM(th_3, sp.pi/2, a_4,0)
+        self.h_3_4 = self.HTM(th_4, -sp.pi/2, 0,a_5)
+        self.h_4_5 = self.HTM(th_5, sp.pi/2, 0,0)
+        self.h_5_6 = self.HTM(th_6, 0, 0,a_6)
 
         self.p_3_4 = self.h_3_4.col(3)
 
@@ -51,7 +51,7 @@ class CalulateInverseKinematicSymbolic:
 
 
 
-    def HMT (self,theta_n, alpha_n, r_n, d_n):
+    def HTM (self,theta_n, alpha_n, r_n, d_n):
         h_i_j=sp.Matrix([[sp.cos(theta_n), -sp.sin(theta_n)*sp.cos(alpha_n), sp.sin(theta_n)*sp.sin(alpha_n), r_n*sp.cos(theta_n)],
                         [sp.sin(theta_n), sp.cos(theta_n)*sp.cos(alpha_n), -sp.cos(theta_n)*sp.sin(alpha_n), r_n*sp.sin(theta_n)],
                         [0, sp.sin(alpha_n), sp.cos(alpha_n), d_n],
@@ -85,7 +85,8 @@ class CalulateInverseKinematicSymbolic:
 
         return r_0_3, r_3_6
 
-
+    def getForwardKinematicsHTM(self):
+        return self.h_0_6
 
 
     #get the rotation matrices

@@ -22,10 +22,28 @@ class CalculateTrajectory:
         pass
 
     def taylorLinearInterpolationAlgorithm(self,init_pos, fin_pos):
+        #step 1
         q_i = self.ned.nedInverseKinematics(init_pos)
         q_f = self.ned.nedInverseKinematics(fin_pos)
+        print("[q_i]: ")
+        print(q_i)
+        print("[q_f]:")
+        print(q_f)
+        print("\n")
 
+        #step 2
         q_m = self.calculateMidJointVector(q_i,q_f)
+        print("[q_m]:")
+        print(q_m)
+
+
+        htm_m = self.ned.calculateForwardKinematics(q_m)
+
+        p_i = init_pos[0:2,3]
+        p_f = fin_pos[0:2,3]
+
+        p_x =  
+        
 
         
 

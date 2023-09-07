@@ -14,7 +14,7 @@ class InverseKinematics:
         th_5 = sp.Symbol("θ5")
         th_6 = sp.Symbol("θ6")
 
-        sym = iks.CalulateInverseKinematicSymbolic()
+        self.sym = iks.CalulateInverseKinematicSymbolic()
 
         r_0_3, self.r_3_6 = sym.calculateRotationMatricesSymbolic(False)
         warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
@@ -112,6 +112,24 @@ class InverseKinematics:
 
         th_3 = np.pi/2 - th_3
         return np.array([th_1,th_2,th_3,th_4,th_5,th_6])
+    
+
+    def calculateForwardKinematics(self, angle_vector):
+        #get angles from vector
+        th_1 = angle_vector[0]
+        th_2 = angle_vector[1]
+        th_3 = angle_vector[2]
+        th_4 = angle_vector[3]
+        th_5 = angle_vector[4]
+        th_6 = angle_vector[5]
+
+        #calculate the forward kinematics using the angles
+        sym_htm = self.sym.getForwardKinematicsHTM()
+        s = (th_1,th_2,th_3,th_4,th_5,th_6)
+        end_point = sp.lambdify(s, sym_htm,modules='numpy')
+        return end_point
+
+
 
 
 def main():
