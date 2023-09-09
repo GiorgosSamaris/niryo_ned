@@ -16,7 +16,7 @@ class InverseKinematics:
 
         self.sym = iks.CalulateInverseKinematicSymbolic()
 
-        r_0_3, self.r_3_6 = sym.calculateRotationMatricesSymbolic(False)
+        r_0_3, self.r_3_6 = self.sym.calculateRotationMatricesSymbolic(False)
         warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
         e = r_0_3
         
@@ -116,6 +116,7 @@ class InverseKinematics:
 
     def calculateForwardKinematics(self, angle_vector):
         #get angles from vector
+        angle_vector = angle_vector[~np.isnan[angle_vector]]
         th_1 = angle_vector[0]
         th_2 = angle_vector[1]
         th_3 = angle_vector[2]

@@ -35,6 +35,7 @@ class CalculateTrajectory:
         q_m = self.calculateMidJointVector(q_i,q_f)
         print("[q_m]:")
         print(q_m)
+        print("\n")
 
 
         htm_m = self.ned.calculateForwardKinematics(q_m)
@@ -42,7 +43,11 @@ class CalculateTrajectory:
         p_i = init_pos[0:2,3]
         p_f = fin_pos[0:2,3]
 
-        p_x =  
+        p_x =  (p_i + p_f)/2
+
+        print("[p_x]: ")
+        print(p_x)
+        print("\n")
         
 
         
