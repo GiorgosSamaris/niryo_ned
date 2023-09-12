@@ -40,10 +40,20 @@ class CalculateTrajectory:
 
         htm_m = self.ned.calculateForwardKinematics(q_m)
 
-        p_i = init_pos[0:2,3]
-        p_f = fin_pos[0:2,3]
+        p_i = init_pos[:3,3]
+        p_f = fin_pos[:3,3]
+        print("[p_i]: ")
+        print(p_i)
+        print("\n")
+        
+        print("[p_f]: ")
+        print(p_f)
+        print("\n")
+        
 
-        p_x =  (p_i + p_f)/2
+
+
+        p_x =  np.add(p_i,p_f)/2
 
         print("[p_x]: ")
         print(p_x)
