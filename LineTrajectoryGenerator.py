@@ -1,4 +1,4 @@
-import InverseKinematics as ik
+import Kinematics as ik
 import numpy as np
 
 

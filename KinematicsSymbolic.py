@@ -3,7 +3,7 @@ import numpy as np
 
 
 
-class CalulateInverseKinematicSymbolic:
+class KinematicsSymbolic:
     def __init__(self):
         th_1 = sp.Symbol("θ1")
         th_2 = sp.Symbol("θ2")
@@ -12,21 +12,21 @@ class CalulateInverseKinematicSymbolic:
         th_5 = sp.Symbol("θ5")
         th_6 = sp.Symbol("θ6")
 
+
+        #group symbolic angle variables set 
+        self.s_th = (th_1,th_2,th_3,th_4,th_5,th_6)
+
+        
         a_1 = sp.Symbol("α1")
         a_2 = sp.Symbol("α2")
         #a_3 = sp.Symbol("α3")
         a_4 = sp.Symbol("α4")
-        a_5 = sp.Symbol("α5")
+        a_5 = sp.Symbol("α5") 
         a_6 = sp.Symbol("α6")
         #a_7 = sp.Symbol("α7")
 
-
-        x = sp.Symbol("x")
-        y = sp.Symbol("y")
-        z = sp.Symbol("z")
-        r = sp.Symbol("r")
-
-        phi = sp.Symbol("φ")
+        #group symbolic dimension variables set
+        self.s_a = (a_1,a_2,a_4,a_5,a_6)
 
         self.h_0_1 = self.HTM(th_1+sp.pi/2, sp.pi/2, 0,a_1)
         self.h_1_2 = self.HTM(th_2+sp.pi/2, 0, a_2,0)
@@ -76,6 +76,9 @@ class CalulateInverseKinematicSymbolic:
         r_0_3 = sp.simplify(r_0_3)
         r_3_6 = sp.simplify(r_3_6)
 
+        
+        nd_r_0_3 = sp.lambdify(self.s_th[:3], r_0_3,modules='numpy')
+
         if(print_res == True):
             print("\n###############################ROTATION MATRICES################################\n")
             print("\n###################################r_0_3########################################\n")
@@ -83,10 +86,28 @@ class CalulateInverseKinematicSymbolic:
             print("\n###################################r_3_6########################################\n")
             sp.pprint(r_3_6)
 
-        return r_0_3, r_3_6
+        return nd_r_0_3
 
-    def getForwardKinematicsHTM(self):
-        return self.h_0_6
+    def getForwardKinematicsHTM(self, print_res = False):
+        s_u = self.s_a+self.s_th
+        end_point = sp.lambdify(s_u, self.h_0_6,modules='numpy')
+        if(print_res == True):
+            print("\n###############################HOMOGENEOUS MATRICES################################\n")
+            print("\n###################################h_0_3########################################\n")
+            sp.pprint(self.h_0_6)
+
+        return end_point
+
+
+
+
+
+
+
+
+
+
+
 
 
     #get the rotation matrices
