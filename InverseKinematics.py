@@ -14,6 +14,8 @@ class InverseKinematics:
         th_5 = sp.Symbol("θ5")
         th_6 = sp.Symbol("θ6")
 
+
+
         self.sym = iks.CalulateInverseKinematicSymbolic()
 
         r_0_3, self.r_3_6 = self.sym.calculateRotationMatricesSymbolic(False)
@@ -29,8 +31,7 @@ class InverseKinematics:
         a_2 = 221
         a_4 = 32.5
         a_5 = 245 #added a_3
-        a_6 = 100
-
+        a_6 = 100 
 
         r_0_6 = target_matrix[:3,:3]
 
@@ -115,44 +116,61 @@ class InverseKinematics:
         return np.array([th_1,th_2,th_3,th_4,th_5,th_6])
     
 
-    def calculateForwardKinematics(self, angle_vector):
-        #get angles from vector
-        self.nanCleanup(angle_vector)
+    # def calculateForwardKinematics(self, angle_vector):
+    #     #get angles from vector
+    #     # print(angle_vector.len())
 
-        th_1 = sp.Symbol("θ1")
-        th_2 = sp.Symbol("θ2")
-        th_3 = sp.Symbol("θ3")
-        th_4 = sp.Symbol("θ4")
-        th_5 = sp.Symbol("θ5")
-        th_6 = sp.Symbol("θ6")
-        
+    #     # self.nanCleanup(angle_vector)
+
+    #     th_1 = sp.Symbol("θ1")
+    #     th_2 = sp.Symbol("θ2")
+    #     th_3 = sp.Symbol("θ3")
+    #     th_4 = sp.Symbol("θ4")
+    #     th_5 = sp.Symbol("θ5")
+    #     th_6 = sp.Symbol("θ6")
+
+    #     a_1 = sp.Symbol("α1")
+    #     a_2 = sp.Symbol("α2")
+    #     #a_3 = sp.Symbol("α3")
+    #     a_4 = sp.Symbol("α4")
+    #     a_5 = sp.Symbol("α5")
+    #     a_6 = sp.Symbol("α6")
+    #     #a_7 = sp.Symbol("α7")
+
+
         
 
-        #calculate the forward kinematics using the angles
-        sym_htm = self.sym.getForwardKinematicsHTM()
+    #     #calculate the forward kinematics using the angles
+    #     sym_htm = self.sym.getForwardKinematicsHTM()
         
     
-        s = (th_1,th_2,th_3,th_4,th_5,th_6)
-        # end_point = sp.lambdify(s, sym_htm,modules='numpy')
+    #     s = (th_1,th_2,th_3,th_4,th_5,th_6,a_1,a_2,a_4,a_5,a_6)
+    #     # end_point = sp.lambdify(s, sym_htm,modules='numpy')
 
-        end_point = sp.lambdify((th_1,th_2,th_3,th_4,th_5,th_6), sym_htm, modules='numpy')
-        th_1 = angle_vector[0]
-        th_2 = angle_vector[1]
-        th_3 = angle_vector[2]
-        th_4 = angle_vector[3]
-        th_5 = angle_vector[4]
-        th_6 = angle_vector[5]
-        end_point(th_1,th_2,th_3,th_4,th_5,th_6)
-        
-        return end_point
+    #     end_point = sp.lambdify(s, sym_htm, modules='numpy')
+    #     th_1 = angle_vector[0]
+    #     th_2 = angle_vector[1]
+    #     th_3 = angle_vector[2]
+    #     th_4 = angle_vector[3]
+    #     th_5 = angle_vector[4]
+    #     th_6 = angle_vector[5]
+    #     a_1 = 171.5
+    #     a_2 = 221
+    #     a_4 = 32.5
+    #     a_5 = 245 #added a_3
+    #     a_6 = 100
 
-    #replaces a nan value with the second solution for the angle
-    def nanCleanup(self, angle_vector):
-        for angle in angle_vector:
-            if(np.isnan(angle[0])):
-                angle[0]=angle[1]
-            elif(np.isnan(angle[1])):
-                angle[1]=angle[0]
+    #     end_effector_pos = end_point(th_1,th_2,th_3,th_4,th_5,th_6,a_1,a_2,a_4,a_5,a_6)
+      
+    #     return end_effector_pos
+
+    # #replaces a nan value with the second solution for the angle
+    # def nanCleanup(self, angle_vector):
+    #     for angle in angle_vector:
+    #         if(np.isnan(angle[0])):
+    #             angle[0]=angle[1]
+    #         elif(np.isnan(angle[1])):
+    #             angle[1]=angle[0]
 
 
         
