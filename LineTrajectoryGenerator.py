@@ -5,7 +5,7 @@ import numpy as np
 
 class CalculateTrajectory:
     def __init__(self):
-        self.ned = ik.InverseKinematics()        
+        self.ned = ik.Kinematics()        
 
 
     def calculateMidJointVector(self, init_angles, fin_angles):
@@ -40,7 +40,7 @@ class CalculateTrajectory:
         print("\n")
 
 
-        htm_m = self.ned.calculateForwardKinematics(q_m[:,1])
+        htm_m = self.ned.nedForwardKinematics(q_m[:,1])
 
         print(htm_m)
 

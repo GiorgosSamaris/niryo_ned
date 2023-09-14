@@ -1,3 +1,4 @@
+import pprint
 import sympy as sp 
 import numpy as np
 
@@ -59,7 +60,10 @@ class KinematicsSymbolic:
         return h_i_j
 
 
-
+    def calculateWristPositionVector(self):
+            p_0_4 = self.h_0_3 * self.p_3_4
+            sp.pprint(sp.simplify(p_0_4))
+    
 
         
     def calculateRotationMatricesSymbolic(self,print_res=False):
@@ -89,12 +93,12 @@ class KinematicsSymbolic:
         return nd_r_0_3
 
     def getForwardKinematicsHTM(self, print_res = False):
-        s_u = self.s_a+self.s_th
+        s_u = self.s_th+self.s_a
         end_point = sp.lambdify(s_u, self.h_0_6,modules='numpy')
         if(print_res == True):
             print("\n###############################HOMOGENEOUS MATRICES################################\n")
             print("\n###################################h_0_3########################################\n")
-            sp.pprint(self.h_0_6)
+            sp.pprint(self.h_0_6[0,3])
 
         return end_point
 
