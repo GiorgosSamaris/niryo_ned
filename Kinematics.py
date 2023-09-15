@@ -39,7 +39,8 @@ class Kinematics:
         pm = np.array([1, -1])
 
         #position vectors from 4 to 1
-        p_z = np.sqrt((w_z-a_1)**2)
+        # p_z = np.sqrt((w_z-a_1)**2)
+        p_z = w_z-a_1
         print("p_z=", p_z)
 
         p_x = np.sqrt(w_x**2+w_y**2)
@@ -92,6 +93,9 @@ class Kinematics:
         alpha = np.arctan2(a_45*np.sin(np.pi-phi),a_45*np.cos(np.pi-phi)+a_2)
         print("ψ=",psi) 
         print("(deg)ψ=",psi*180/np.pi) 
+        print("alpha= ",alpha)
+        print("(deg)alpha= ",alpha*180/np.pi)
+        print()
        
         th_2_d = psi - alpha
         # print("th2=", th_2)
@@ -131,8 +135,8 @@ class Kinematics:
         #     th_6 = [0,0]
         #     th_4 = [0,0]
             
-        th_3 = th_3 + np.pi/2
-        # th_2 = np.pi/2 - th_2
+        th_3 = np.pi/2 + th_3
+        th_2 = -np.pi/2 + th_2
         
         return np.array([th_1,th_2,th_3])
     
