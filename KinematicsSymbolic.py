@@ -15,7 +15,7 @@ class KinematicsSymbolic:
 
 
         #group symbolic angle variables set 
-        self.s_th = (th_1,th_2,th_3,th_4,th_5,th_6)
+        self.s_th = (th_1,th_2,th_3)
 
         
         a_1 = sp.Symbol("α1")
@@ -62,7 +62,7 @@ class KinematicsSymbolic:
 
     def calculateWristPositionVector(self):
             p_0_4 = self.h_0_3 * self.p_3_4
-            sp.pprint(sp.simplify(p_0_4))
+            # sp.pprint(sp.simplify(p_0_4))
     
 
         
@@ -93,12 +93,13 @@ class KinematicsSymbolic:
         return nd_r_0_3
 
     def getForwardKinematicsHTM(self, print_res = False):
+        p_0_4 = self.h_0_3 * self.p_3_4
         s_u = self.s_th+self.s_a
-        end_point = sp.lambdify(s_u, self.h_0_6,modules='numpy')
+        end_point = sp.lambdify(s_u, p_0_4,modules='numpy')
         if(print_res == True):
             print("\n###############################HOMOGENEOUS MATRICES################################\n")
             print("\n###################################h_0_3########################################\n")
-            sp.pprint(self.h_0_6[0,3])
+            sp.pprint(self.h_0_3[0,3])
 
         return end_point
 
