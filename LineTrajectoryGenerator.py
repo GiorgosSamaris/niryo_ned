@@ -8,7 +8,7 @@ class CalculateTrajectory:
     def __init__(self):
         self.ned = ik.Kinematics()        
         np.set_printoptions(suppress=True)
-        self.data = csv.CSVWriter("~/Documents/ned/controllers/test/solutions.csv",["θ1","θ2","θ3","θ4","θ5","θ6"])
+        self.data = csv.CSVWriter("C:/Users/Γιώργος Σάμαρης/Documents/niryo_ned/controllers/test/solutions.csv",["θ1","θ2","θ3","θ4","θ5","θ6"])
 
     def calculateMidJointVector(self, init_angles, fin_angles):
         q_f = fin_angles
@@ -23,7 +23,7 @@ class CalculateTrajectory:
     def calculateMidPositionVector(self, init_pos, fin_pos):
         pass
 
-    def taylorLinearInterpolationAlgorithm(self,init_pos, fin_pos, delta_p_max,recursion_lvl=0):
+    def taylorLinearInterpolationAlgorithm(self,init_pos, fin_pos, delta_p_max,recursion_lvl = 0,write_csv = False):
         #step 1
         q_i_arr = self.ned.nedInverseKinematics(init_pos)
         q_f_arr = self.ned.nedInverseKinematics(fin_pos)
@@ -109,8 +109,10 @@ class CalculateTrajectory:
             self.taylorLinearInterpolationAlgorithm(htm_x, fin_pos,delta_p_max,recursion_lvl+1)
         if(recursion_lvl == 0):
             self.data.add_row(q_f)
-            self.data.write_csv()
-            self.data.clear_data()
+            if(write_csv):
+                self.data.write_csv()
+                self.data.clear_data()
+    
         
 
 
@@ -118,15 +120,35 @@ class CalculateTrajectory:
 t = CalculateTrajectory()
 
 
-m_i = np.array([[1,0,0,-320],
-                [0,1,0,210],
-                [0,0,1,280],
+m_first = np.array([[0,1,0,150],
+                [1,0,0,210],
+                [0,0,-1,100],
                 [0,0,0,1]])
 
-
-m_f = np.array([[1,0,0,320 ],
-                [0,1,0,210],
-                [0,0,1,100],
+m_second = np.array([[0,1,0,-150 ],
+                [1,0,0,210],
+                [0,0,-1,100],
                 [0,0,0,1]])
 
-t.taylorLinearInterpolationAlgorithm(m_i,m_f,[0.1,0.1,0.1])
+t.taylorLinearInterpolationAlgorithm(m_first,m_second,[0.01,0.01,0.01])
+
+m_third = np.array([[0,1,0,-150],
+                [1,0,0,210],
+                [0,0,-1,300],
+                [0,0,0,1]])
+
+t.taylorLinearInterpolationAlgorithm(m_second,m_third,[0.01,0.01,0.01])
+
+m_fourth = np.array([[0,1,0,150],
+                [1,0,0,210],
+                [0,0,-1,300],
+                [0,0,0,1]])
+
+t.taylorLinearInterpolationAlgorithm(m_third,m_fourth,[0.01,0.01,0.01])
+
+m_first = np.array([[0,1,0,150],
+                [1,0,0,210],
+                [0,0,-1,100],
+                [0,0,0,1]])
+
+t.taylorLinearInterpolationAlgorithm(m_fourth,m_first,[0.01,0.01,0.01],write_csv=True)
