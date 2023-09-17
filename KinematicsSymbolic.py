@@ -15,7 +15,7 @@ class KinematicsSymbolic:
 
 
         #group symbolic angle variables set 
-        self.s_th = (th_1,th_2,th_3)
+        self.s_th = (th_1,th_2,th_3,th_4,th_5,th_6)
 
         
         a_1 = sp.Symbol("α1")
@@ -80,6 +80,18 @@ class KinematicsSymbolic:
         r_0_3 = sp.simplify(r_0_3)
         r_3_6 = sp.simplify(r_3_6)
 
+
+        r_0_6 =sp.Matrix([[0,1,0],
+                [0,0,1],
+                [1,0,0]])
+
+
+        r_0_3 = sp.simplify(r_0_3)
+        r_3_6 = sp.simplify(r_3_6)
+        r_0_6 = sp.simplify(r_0_6)
+
+        r_3_6_sol = r_0_3.transpose()*r_0_6
+
         
         nd_r_0_3 = sp.lambdify(self.s_th[:3], r_0_3,modules='numpy')
 
@@ -89,17 +101,18 @@ class KinematicsSymbolic:
             sp.pprint(r_0_3)
             print("\n###################################r_3_6########################################\n")
             sp.pprint(r_3_6)
+            print("\n###################################r_3_6(sol)########################################\n")
+            sp.pprint(sp.simplify(r_3_6_sol))
 
         return nd_r_0_3
 
     def getForwardKinematicsHTM(self, print_res = False):
-        p_0_4 = self.h_0_3 * self.p_3_4
         s_u = self.s_th+self.s_a
-        end_point = sp.lambdify(s_u, p_0_4,modules='numpy')
+        end_point = sp.lambdify(s_u,self.h_0_6,modules='numpy')
         if(print_res == True):
             print("\n###############################HOMOGENEOUS MATRICES################################\n")
             print("\n###################################h_0_3########################################\n")
-            sp.pprint(self.h_0_3[0,3])
+            sp.pprint(self.h_0_6[0,3])
 
         return end_point
 
@@ -112,50 +125,5 @@ class KinematicsSymbolic:
 
 
 
-
-
-
-    #get the rotation matrices
-    # r_0_6 =  sp.Matrix([[1,0,0],
-    #                     [0,1,0],
-    #                     [0,0,1]])
-
-
-
-
-    # r_3_6_sol =  r_0_3.transpose()*r_0_6
-
-    # p_0_4 = h_0_3 * p_3_4
-
-
-    # h_4_6 = h_4_5*h_5_6
-
-    # p_0_4_sol = h_4_6.transpose()*sp.Matrix([[x],[y],[z],[1]])
-
-    # p_x = sp.simplify(p_0_4[0]**2 + p_0_4[1]**2)
-
-    # p_z = p_0_4[2]-a_1
-
-    # ro = sp.simplify(p_x + p_z**2)
-
-    # print("#############################HOMOGENEOUS MATRICES###############################\n")
-    # print("\n###################################h_0_3########################################\n")
-    # sp.pprint(sp.simplify(h_0_3))
-    # print("\n###################################h_0_6########################################\n")
-    # sp.pprint(sp.simplify(h_0_6))
-    # print("\n###############################ROTATION MATRICES################################\n")
-    # print("\n###################################r_3_6########################################\n")
-    # sp.pprint(sp.simplify(r_3_6))
-    # sp.pprint(sp.simplify(r_3_6_sol))
-    # print("\n###############################POSITION MATRICES################################\n")
-    # sp.pprint(sp.simplify(p_0_4))
-
-    # #nd_s = (th_4,th_5,th_6)
-
-    # #nd_r_3_6 = sp.lambdify(nd_s, r_3_6, modules='numpy')
-
-
-    
-    # # sp.pprint(sp.simplify(p_0_4_sol))
 
 
