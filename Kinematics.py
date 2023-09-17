@@ -10,7 +10,7 @@ class Kinematics:
         self.sym = iks.KinematicsSymbolic()
 
         #get rotation matrices to later calculate orientation of end effector
-        self.r_0_3 = self.sym.calculateRotationMatricesSymbolic(True)
+        self.r_0_3 = self.sym.calculateRotationMatricesSymbolic(False)
         warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning) 
 
         #get HTM of ned
@@ -22,18 +22,18 @@ class Kinematics:
         a_1 = 171.5
         a_2 = 221
         a_4 = 32.5
-        a_5 = 235 +10 #added a3 
+        a_5 = 235 #+10 #added a3 
         a_6 = 100 
 
         r_0_6 = target_matrix[:3,:3]
 
         w_x = target_matrix[0,3]
         w_y = target_matrix[1,3]
-        w_z = target_matrix[2,3] + r_0_6[2,2]*a_6
-        print("target wrist pos")
-        print("x:",w_x)
-        print("y:",w_y)
-        print("z:",w_z)
+        w_z = target_matrix[2,3] - r_0_6[2,2]*a_6
+        # print("target wrist pos")
+        # print("x:",w_x)
+        # print("y:",w_y)
+        # print("z:",w_z)
 
         #used to denote a +- solution
         pm = np.array([1, -1])
@@ -95,19 +95,19 @@ class Kinematics:
         e_sol = np.matmul(e_sol.transpose(),r_0_6)
       
         c_5 = e_sol[2,2]
-        s_5 = pm*np.sqrt(1-c_5**2)
+        s_5 = np.sqrt(1-c_5**2)
         # th_5 = np.arccos(c_5)
         th_5 = np.arctan2(s_5,c_5) 
         #/////////////////////////////////find th_6 /////////////////////////////////////
         if(np.sin(th_5).all()!= 0):
             s_6 = e_sol[2,1]/np.sin(th_5)
             c_6 = e_sol[2,0]/np.sin(th_5)
-            th_6 = np.arctan2(s_6,-c_6)
+            th_6 = np.arctan2(-s_6,c_6)
 
             #/////////////////////////////////find th_4 /////////////////////////////////////
             s_4 = e_sol[1,2]/np.sin(th_5)
             c_4 = e_sol[0,2]/np.sin(th_5)
-            th_4 = np.arctan2(s_4,-c_4)
+            th_4 = np.arctan2(s_4,c_4)
 
         else: 
             th_6 = [0,0]
@@ -118,7 +118,7 @@ class Kinematics:
         
         return np.array([th_1,th_2,th_3,th_4,th_5,th_6])
     
-    def nedForwardKinematrics(self, joint_angles):
+    def nedForwardKinematics(self, joint_angles):
         th_1 = joint_angles[0]
         th_2 = joint_angles[1]
         th_3 = joint_angles[2]
@@ -128,7 +128,7 @@ class Kinematics:
         a_1 = 171.5
         a_2 = 221
         a_4 = 32.5
-        a_5 = 235 +10 #added a3 
+        a_5 = 235# +10 #added a3 
         a_6 = 100 
         end_eff_pos = self.h_0_3(th_1,th_2,th_3,th_4,th_5,th_6,a_1,a_2,a_4,a_5,a_6)
         return end_eff_pos
