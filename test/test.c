@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 
 
 	passive_wait(2);
-
+           unsigned int loop = 0;
 	while (wb_robot_step(time_step) != -1)
 	{
 		
@@ -135,8 +135,9 @@ int main(int argc, char **argv)
 		wb_motor_set_position(motors[4],-1*angles[3]);//-
 		wb_motor_set_position(motors[5],angles[4]);//+
 		wb_motor_set_position(motors[6],angles[5]);//+	
-
-		passive_wait(5);
+                      if(loop ==0)
+          		     passive_wait(5);
+        		loop++;
 		
 	}
 
