@@ -39,38 +39,31 @@ n_poly=2;
 while(Taylor_Criterion)
     n_poly=n_poly+1;
     theta_turn=2*3.14/n_poly;
-    points=zeros(2);
-    points_avg=[0,0]
-    points(1,1)=R;
-    points(1,2)=0;
-    points(2,1)=R_circle*cos((i-1)*theta_turn_final);
-    points(2,2)=R_circle*sin((i-1)*theta_turn_final);
+    theta_turn=2*3.14/n_poly;
+    local_points=zeros(n_poly,3);
+    for i=1:n_poly
+    local_points(i,1)=R_circle*cos((i-1)*theta_turn); 
+    local_points(i,2)=R_circle*sin((i-1)*theta_turn); 
+    end
+%% Transformation to Local Coordinate system Coordinates(DOT PRODUCT BETWEEN VECTORS OF POINTS AND UNITY VECTORS
+    local_trans=zeros(n_poly,3);
+    for i=1:n_poly
+    local_trans(i,1)=local_points(i,1)*local_x_axis(1)+local_points(i,2)*local_x_axis(2)+local_points(i,3)*local_x_axis(3);
+    local_trans(i,2)=local_points(i,1)*local_y_axis(1)+local_points(i,2)*local_y_axis(2)+local_points(i,3)*local_y_axis(1);
+    local_trans(i,3)=local_points(i,1)*unity_plane_vec(1)+local_points(i,2)*unity_plane_vec(2)+local_points(i,3)*unity_plane_vec(3);
+    end
+    %% Transformation to General Coordinate system
+    Trans_vectors=zeros(n_poly,3);
+    for i=1:n_poly
+    Trans_vectors(i,:)=PC; 
+    end
+    global_points=Trans_vectors+local_trans;
     %Your Part of the algorithm for inverse kinematics calculation, median
     point from points, median point for inverse kimematic p_avg(q_avg)
 
     n_poly_final=n_poly
 %}
-n_poly_final=82;
-theta_turn_final=2*3.14/n_poly_final;
-local_points=zeros(n_poly_final,3);
-for i=1:n_poly_final
-    local_points(i,1)=R_circle*cos((i-1)*theta_turn_final); 
-    local_points(i,2)=R_circle*sin((i-1)*theta_turn_final); 
-end
-%% Transformation to Local Coordinate system Coordinates(DOT PRODUCT BETWEEN VECTORS OF POINTS AND UNITY VECTORS
-local_trans=zeros(n_poly_final,3);
-for i=1:n_poly_final
-    local_trans(i,1)=local_points(i,1)*local_x_axis(1)+local_points(i,2)*local_x_axis(2)+local_points(i,3)*local_x_axis(3);
-    local_trans(i,2)=local_points(i,1)*local_y_axis(1)+local_points(i,2)*local_y_axis(2)+local_points(i,3)*local_y_axis(1);
-    local_trans(i,3)=local_points(i,1)*unity_plane_vec(1)+local_points(i,2)*unity_plane_vec(2)+local_points(i,3)*unity_plane_vec(3);
-end
-%% Transformation to General Coordinate system
-Trans_vectors=zeros(n_poly_final,3);
-for i=1:n_poly_final
-    Trans_vectors(i,:)=PC; 
-end
-global_points=Trans_vectors+local_trans;
-plot3(global_points(:,1),global_points(:,2),global_points(:,3))
+
 
 %{ 
 Circlular movement
