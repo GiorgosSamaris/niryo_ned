@@ -118,8 +118,22 @@ class KinematicsSymbolic:
 
 
 
+    def calculateJacobian(self):
+        
 
 
+        d_var = sp.Matrix([self.s_th[:3]])
+        j_xyz = self.h_0_3[:3,3].jacobian(d_var)     #X,Y,Z relative to θ1,θ2,θ3
+        # j_roll = self.h_0_6[:3,:3].jacobian(d_var)
+        # j_pitch = self.h_0_6[:3,:3].jacobian(d_var)
+        # j_yaw = self.h_0_6[:3,:3].jacobian(d_var)
+        
+        sp.pprint(j_xyz)
+        print(j_xyz.shape)
+
+        s_u = self.s_th[:3] +self.s_a
+        v = sp.lambdify(s_u,j_xyz,modules='numpy')
+        return v
 
 
 

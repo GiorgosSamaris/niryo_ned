@@ -134,7 +134,25 @@ class Kinematics:
         return end_eff_pos
     
 
-        
+    def nedEndEffectorVelocity(self, target_velocity, joint_angles):
+
+        a_1 = 171.5
+        a_2 = 221
+        a_4 = 32.5
+        a_5 = 235# +10 #added a3 
+        a_6 = 100 
+
+        th_1 = joint_angles[0]
+        th_2 = joint_angles[1]
+        th_3 = joint_angles[2]
+        th_4 = joint_angles[3]
+        th_5 = joint_angles[4]
+        th_6 = joint_angles[5]
+        J_lambda = self.sym.calculateJacobian()
+        J = np.array(J_lambda(th_1,th_2,th_3,a_1,a_2,a_4,a_5,a_6))
+        print(J)
+        return np.linalg.inv(J)*target_velocity
+       
 
    
 
