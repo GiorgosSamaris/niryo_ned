@@ -34,41 +34,32 @@ local_y_axis=[a(2)*b(3)-a(3)*b(2),a(3)*b(1)-a(1)*b(3),a(1)*b(2)-a(2)*b(1)];     
 
 %% Creation of Circle in Plane 
 n_poly=2;
-%%Use of Taylor_Criterion to choose number of polygons
-%{
-while(Taylor_Criterion)
+dis=0.1;
+s=1e6;
+while(abs(R_circle-s)>dis)
     n_poly=n_poly+1;
     theta_turn=2*3.14/n_poly;
-    theta_turn=2*3.14/n_poly;
+    theta_turn_mid=2*3.14/n_poly;
     local_points=zeros(n_poly,3);
     for i=1:n_poly
     local_points(i,1)=R_circle*cos((i-1)*theta_turn); 
     local_points(i,2)=R_circle*sin((i-1)*theta_turn); 
     end
+    mid_point=[0.5*(local_points(1,1)+local_points(2,1)),0.5*(local_points(1,2)+local_points(2,2))];
+    s=sqrt(mid_point(1)^2+mid_point(2)^2);
+end
 %% Transformation to Local Coordinate system Coordinates(DOT PRODUCT BETWEEN VECTORS OF POINTS AND UNITY VECTORS
     local_trans=zeros(n_poly,3);
-    for i=1:n_poly
+for i=1:n_poly
     local_trans(i,1)=local_points(i,1)*local_x_axis(1)+local_points(i,2)*local_x_axis(2)+local_points(i,3)*local_x_axis(3);
     local_trans(i,2)=local_points(i,1)*local_y_axis(1)+local_points(i,2)*local_y_axis(2)+local_points(i,3)*local_y_axis(1);
     local_trans(i,3)=local_points(i,1)*unity_plane_vec(1)+local_points(i,2)*unity_plane_vec(2)+local_points(i,3)*unity_plane_vec(3);
-    end
+end
     %% Transformation to General Coordinate system
     Trans_vectors=zeros(n_poly,3);
-    for i=1:n_poly
+for i=1:n_poly
     Trans_vectors(i,:)=PC; 
-    end
+end
     global_points=Trans_vectors+local_trans;
-    %Your Part of the algorithm for inverse kinematics calculation, median
-    point from points, median point for inverse kimematic p_avg(q_avg)
+plot3(global_points(:,1),global_points(:,2),global_points(:,3))
 
-    n_poly_final=n_poly
-%}
-
-
-%{ 
-Circlular movement
-for i=1:n_poly_final-1
- initial_point=[points_points(i,1),points_points(i,2)
- final_point=[points_points(i+1,1),points_points(i+1,2)]
- %Your Part of the algorithm for traversing from one point to another
-%}
