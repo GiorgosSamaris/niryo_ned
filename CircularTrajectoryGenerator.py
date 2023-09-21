@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import TrajectoryGenerator as t
-test = t.CalculateTrajectory()
+
+
+
 
 
 
@@ -12,9 +14,9 @@ test = t.CalculateTrajectory()
 # P2 = np.array([float(input("x P2: ")), float(input("y P2: ")), float(input("z P2: "))])
 
 R_circle = 40
-PC = np.array([0,100,200])
-P1 = np.array([0,140,200])
-P2 = np.array([40,100,200])
+PC = np.array([0,200,200])
+P1 = np.array([0,240,200])
+P2 = np.array([40,200,200])
 
 # Creation of Plane and local coordinate system
 a = P1 - PC
@@ -26,7 +28,7 @@ local_y_axis = np.cross(unity_plane_vec, local_x_axis)
 
 # Creation of Circle in Plane 
 n_poly = 2
-dis = 0.1
+dis = 0.01
 s = 1e6
 while(abs(R_circle - s) > dis):
     n_poly += 1
@@ -49,25 +51,34 @@ for i in range(n_poly):
 Trans_vectors = np.tile(PC, (n_poly, 1))
 global_points = Trans_vectors + local_trans
 wrt = False
-for i,p_i in enumerate(global_points):
-
-    htm_i = np.array([[0,1,0,p_i[0]],
-                [1,0,0,p_i[1]],
-                [0,0,-1,p_i[2]],
+htm = np.array([[0,1,0,0],
+                [1,0,0,0],
+                [0,0,-1,0],
                 [0,0,0,1]])
+
+test = t.CalculateTrajectory()
+
+for i,p_i in enumerate(global_points):
+        
+    print(p_i)
+    htm_i = htm
+    htm_i[:3,3] = p_i
     #get next point
     f=i+1
-    if(f<global_points.shape[0]-1):
+    if(f<global_points.shape[0]):
         p_f = global_points[f]
-        htm_f = np.array([[0,1,0,p_f[0]],
-                [1,0,0,p_f[1]],
-                [0,0,-1,p_f[2]],
-                [0,0,0,1]])
+        htm_f = htm
+        htm_f[:3,3] = p_f
+        print(p_f)
     else:
         htm_f = htm_i
-        wrt = True
-    test.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01],write_csv=wrt)
+    print()
+    if(i==0):
+        print("file wrote")
+        m = 'w'
+    else:
+        m = 'a' 
+    test.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01],csv_mode = m)
 
 
-plt.plot(global_points[:, 0], global_points[:, 1], global_points[:, 2])
-plt.show()
+

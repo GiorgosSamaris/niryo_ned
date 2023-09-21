@@ -9,10 +9,15 @@ class CSVWriter:
     def add_row(self, row_data):
         self.data.append(row_data)
 
-    def write_csv(self):
+    def write_csv(self,mode):
         data_df = pd.DataFrame(self.data, columns=self.columns)
-        data_df.to_csv(self.filename, index=False)
-        print(f"CSV file '{self.filename}' has been successfully created.")
+        if(mode =='w'):
+            print(f"CSV file '{self.filename}' has been successfully created.")
+            hdr = True
+        else:
+            hdr = False
+        data_df.to_csv(self.filename, mode=mode, index=False,header= hdr)
+        self.__clear_data()
 
-    def clear_data(self):
+    def __clear_data(self):
         self.data = []
