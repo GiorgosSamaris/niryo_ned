@@ -8,8 +8,11 @@ class CSVWriter:
 
     def add_row(self, row_data):
         self.data.append(row_data)
+        
 
     def write_csv(self,mode):
+        print("mode = ", mode)
+        print(self.data)
         data_df = pd.DataFrame(self.data, columns=self.columns)
         if(mode =='w'):
             print(f"CSV file '{self.filename}' has been successfully created.")
@@ -21,3 +24,5 @@ class CSVWriter:
 
     def __clear_data(self):
         self.data = []
+    def getBuffer(self):
+        return self.data
