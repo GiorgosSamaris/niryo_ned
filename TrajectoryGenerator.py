@@ -195,39 +195,39 @@ class CalculateTrajectory:
 
 
 t = CalculateTrajectory()
-t.circularInterpolationAlgorithm()
+# t.circularInterpolationAlgorithm()
 
-# m_first = np.array([[0,1,0,150],
-#                 [1,0,0,210],
-#                 [0,0,-1,100],
-#                 [0,0,0,1]])
+m_first = np.array([[0,1,0,150],
+                [1,0,0,210],
+                [0,0,-1,100],
+                [0,0,0,1]])
 
-# m_second = np.array([[0,1,0,-150],
-#                 [1,0,0,210],
-#                 [0,0,-1,100],
-#                 [0,0,0,1]])
+m_second = np.array([[0,1,0,-150],
+                [1,0,0,210],
+                [0,0,-1,100],
+                [0,0,0,1]])
 
-# t.taylorLinearInterpolationAlgorithm(m_first,m_second,[0.01,0.01,0.01])
+t.taylorLinearInterpolationAlgorithm(m_first,m_second,[0.01,0.01,0.01])
 
-# m_third = np.array([[0,1,0,-150],
-#                 [1,0,0,210],
-#                 [0,0,-1,300],
-#                 [0,0,0,1]])
+m_third = np.array([[0,1,0,-150],
+                [1,0,0,210],
+                [0,0,-1,300],
+                [0,0,0,1]])
 
-# t.taylorLinearInterpolationAlgorithm(m_second,m_third,[0.01,0.01,0.01])
+t.taylorLinearInterpolationAlgorithm(m_second,m_third,[0.01,0.01,0.01])
 
-# m_fourth = np.array([[0,1,0,150],
-#                 [1,0,0,210],
-#                 [0,0,-1,300],
-#                 [0,0,0,1]])
+m_fourth = np.array([[0,1,0,150],
+                [1,0,0,210],
+                [0,0,-1,300],
+                [0,0,0,1]])
 
-# t.taylorLinearInterpolationAlgorithm(m_third,m_fourth,[0.01,0.01,0.01])
+t.taylorLinearInterpolationAlgorithm(m_third,m_fourth,[0.01,0.01,0.01])
 
-# m_first = np.array([[0,1,0,150],
-#                 [1,0,0,210],
-#                 [0,0,-1,100],
-#                 [0,0,0,1]])
+m_first = np.array([[0,1,0,150],
+                [1,0,0,210],
+                [0,0,-1,100],
+                [0,0,0,1]])
 
-# t.taylorLinearInterpolationAlgorithm(m_fourth,m_first,[0.01,0.01,0.01])
+t.taylorLinearInterpolationAlgorithm(m_fourth,m_first,[0.01,0.01,0.01])
 
 t.writeKinematicSolutions()

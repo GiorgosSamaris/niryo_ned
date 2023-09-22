@@ -23,6 +23,7 @@
 #define MAXCHAR 256
 
 char row[MAXCHAR];
+char row_v[MAXCHAR];
 
 /*
 * You may want to add macros here.
@@ -48,7 +49,7 @@ double degToRad(double deg)
 	return deg/180*3.1415;
 }
 
-int readCSV(FILE* file_ptr, double *data)
+int readCSV(FILE* file_ptr, double *data, int data_per_line)
 {
 
 	fgets(row, MAXCHAR, file_ptr);
@@ -58,7 +59,7 @@ int readCSV(FILE* file_ptr, double *data)
     // printf("Row is: %s", row);
 	data[0] = strtod(strtok(row, ","),NULL);
 	// printf("%lf\n",data[0]);
-	for(int i =1; i<6; i++)
+	for(int i =1; i<data_per_line; i++)
 	{
 		data[i] = strtod(strtok(NULL,","),NULL);
 		// printf("%lf\n",data[i]);
@@ -99,7 +100,7 @@ int main(int argc, char **argv)
 
 	// set the motors speed. Here we set it to 1 radian/second
 	wb_motor_set_velocity(motors[1], 1.0);
-	wb_motor_set_velocity(motors[2], 0.7);
+	wb_motor_set_velocity(motors[2], 1.0);
 	wb_motor_set_velocity(motors[3], 1.0);
 	wb_motor_set_velocity(motors[4], 1.0);
 	wb_motor_set_velocity(motors[5], 1.0);
@@ -108,6 +109,7 @@ int main(int argc, char **argv)
 	wb_motor_set_velocity(gripper[2], 1.0);
 
 	double angles[6];
+	double ang_vel[3]={1,1,1};
 	// control with keyboard
 	FILE* stream = fopen("solutions.csv", "r");
 	if (stream == NULL) {
@@ -119,23 +121,41 @@ int main(int argc, char **argv)
 	    fgets(row, MAXCHAR, stream);
     }
 
+	FILE* stream_v = fopen("solutions_v.csv", "r");
+	if (stream_v == NULL) {
+		perror("Failed to open file");
+		return 1;
+	}
+	else{
+        printf("File opened successfuly");
+	    fgets(row_v, MAXCHAR, stream_v);
+    }
+
 
 
 	passive_wait(2);
            unsigned int loop = 0;
 	while (wb_robot_step(time_step) != -1)
 	{
-		
-		if(readCSV(stream,angles))
+		//read data from csv to get angles
+		if(readCSV(stream,angles,6))
 			break;
+		// readCSV(stream_v,ang_vel,3);
+
+		// wb_motor_set_velocity(motors[1], ang_vel[0]);
+		// wb_motor_set_velocity(motors[2], ang_vel[1]);
+		// wb_motor_set_velocity(motors[3], ang_vel[2]);
 		
+		// insert angles to set robots configuration
 		wb_motor_set_position(motors[1],angles[0]);//+
 		wb_motor_set_position(motors[2],-1*angles[1]);//-
 		wb_motor_set_position(motors[3],-1*angles[2]);//-
 		wb_motor_set_position(motors[4],-1*angles[3]);//-
 		wb_motor_set_position(motors[5],angles[4]);//+
 		wb_motor_set_position(motors[6],angles[5]);//+	
-                      if(loop ==0)
+		
+		// wait to get to the first point
+                        if(loop ==0)
           		     passive_wait(5);
         		loop++;
 		
