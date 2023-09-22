@@ -9,7 +9,7 @@ np.set_printoptions(suppress=True)
 
 robot = k.Kinematics()
 
-dq = robot.nedEndEffectorVelocity([125,125,125],[np.pi/2,1,0,0,0,0])
+dq = robot.nedEndEffectorVelocity([125,125,125],[0,0,0,0,0,0])
 print(dq)
 
 # m_i = np.array([[0,1,0,320],

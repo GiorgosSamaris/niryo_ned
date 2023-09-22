@@ -145,13 +145,12 @@ class Kinematics:
         th_1 = joint_angles[0]
         th_2 = joint_angles[1]
         th_3 = joint_angles[2]
-        th_4 = joint_angles[3]
-        th_5 = joint_angles[4]
-        th_6 = joint_angles[5]
+        
         J_lambda = self.sym.calculateJacobian()
         J = np.array(J_lambda(th_1,th_2,th_3,a_1,a_2,a_4,a_5,a_6))
-        print(J)
-        return np.linalg.inv(J)*target_velocity
+        inv_J = np.linalg.inv(J)
+        print(np.shape(inv_J))
+        return np.matmul(inv_J,target_velocity)
        
 
    
