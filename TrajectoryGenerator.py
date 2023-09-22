@@ -36,7 +36,7 @@ class CalculateTrajectory:
     
 
 
-    def taylorLinearInterpolationAlgorithm(self,target_velocity,init_pos, fin_pos, delta_p_max,recursion_lvl = 0,csv_mode = 'a'):
+    def taylorLinearInterpolationAlgorithm(self,init_pos, fin_pos, delta_p_max,recursion_lvl = 0):
         #step 1
         q_i_arr = self.ned.nedInverseKinematics(init_pos)
         q_f_arr = self.ned.nedInverseKinematics(fin_pos)
@@ -100,28 +100,19 @@ class CalculateTrajectory:
             
             q_m_arr= self.ned.nedInverseKinematics(htm_x)
             q_p = np.array([q_m_arr[0][0],q_m_arr[1][1],q_m_arr[2][1],q_m_arr[3][1],q_m_arr[4][1],q_m_arr[5][1]])
-            # print("[q_p]:",q_p)
             self.data.add_row(q_p)
-            dq_1 = self.ned.nedEndEffectorVelocity(target_velocity, q_p)
-            print(dq_1)
-            self.data_v.add_row(dq_1)
-            # if(recursion_lvl == 1):
-            #     self.data.add_row(q_f)     
-            #     dq_2 = self.ned.nedEndEffectorVelocity(target_velocity, q_f)
-            #     self.data_v.add_row(dq_2)        
-            #     self.data.write_csv(csv_mode)
-            #     self.data_v.write_csv(csv_mode)
             return
         else:
-            self.taylorLinearInterpolationAlgorithm(target_velocity,init_pos,htm_x,delta_p_max,recursion_lvl+1)
-            self.taylorLinearInterpolationAlgorithm(target_velocity,htm_x, fin_pos,delta_p_max,recursion_lvl+1)
-        if(recursion_lvl == 0):
+            self.taylorLinearInterpolationAlgorithm(init_pos,htm_x,delta_p_max,recursion_lvl+1)
+            self.taylorLinearInterpolationAlgorithm(htm_x, fin_pos,delta_p_max,recursion_lvl+1)
+            if(recursion_lvl == 0):
                 self.data.add_row(q_f)     
                 dq_2 = self.ned.nedEndEffectorVelocity(target_velocity, q_f)
                 self.data_v.add_row(dq_2)        
-                self.data.write_csv(csv_mode)
-                self.data_v.write_csv(csv_mode)
+                self.data.write_csv(csv_mode)       
 
+    def writeKinematicSolutions(self,csv_mode='w'):
+        self.data.write_csv(csv_mode)
 
     def circularInterpolationAlgorithm(self):
         R_circle = 100
@@ -187,10 +178,9 @@ class CalculateTrajectory:
             # print("htm_i =\n",htm_i)
             # print("htm_f =\n",htm_f)
             if(i_index==0):
-                print("created csv")
-                self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01],csv_mode='w')
+                self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01])
             else:
-                self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01],csv_mode='a')
+                self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01])
 
 
         
@@ -214,23 +204,45 @@ m_second = np.array([[0,1,0,-150],
 
 t.taylorLinearInterpolationAlgorithm(target_v,m_first,m_second,[0.01,0.01,0.01],csv_mode='w')
 
-m_third = np.array([[0,1,0,-150],
-                [1,0,0,210],
-                [0,0,-1,300],
-                [0,0,0,1]])
+t.circularInterpolationAlgorithm()
 
-t.taylorLinearInterpolationAlgorithm(target_v,m_second,m_third,[0.01,0.01,0.01])
+# m_first = np.array([[0,1,0,150],
+#                 [1,0,0,210],
+#                 [0,0,-1,100],
+#                 [0,0,0,1]])
+
+# m_second = np.array([[0,1,0,-150],
+#                 [1,0,0,210],
+#                 [0,0,-1,100],
+#                 [0,0,0,1]])
+
 
 m_fourth = np.array([[0,1,0,150],
                 [1,0,0,210],
                 [0,0,-1,300],
                 [0,0,0,1]])
 
-t.taylorLinearInterpolationAlgorithm(target_v,m_third,m_fourth,[0.01,0.01,0.01])
+# t.taylorLinearInterpolationAlgorithm(m_first,m_second,[0.01,0.01,0.01])
 
-m_first = np.array([[0,1,0,150],
-                [1,0,0,210],
-                [0,0,-1,100],
-                [0,0,0,1]])
+# m_third = np.array([[0,1,0,-150],
+#                 [1,0,0,210],
+#                 [0,0,-1,300],
+#                 [0,0,0,1]])
 
-t.taylorLinearInterpolationAlgorithm(target_v,m_fourth,m_first,[0.01,0.01,0.01])
+# t.taylorLinearInterpolationAlgorithm(m_second,m_third,[0.01,0.01,0.01])
+
+# m_fourth = np.array([[0,1,0,150],
+#                 [1,0,0,210],
+#                 [0,0,-1,300],
+#                 [0,0,0,1]])
+
+# t.taylorLinearInterpolationAlgorithm(m_third,m_fourth,[0.01,0.01,0.01])
+
+# m_first = np.array([[0,1,0,150],
+#                 [1,0,0,210],
+#                 [0,0,-1,100],
+#                 [0,0,0,1]])
+
+# t.taylorLinearInterpolationAlgorithm(m_fourth,m_first,[0.01,0.01,0.01])
+
+t.writeKinematicSolutions()

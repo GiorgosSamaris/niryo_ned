@@ -11,8 +11,6 @@ class CSVWriter:
         
 
     def write_csv(self,mode):
-        print("mode = ", mode)
-        print(self.data)
         data_df = pd.DataFrame(self.data, columns=self.columns)
         if(mode =='w'):
             print(f"CSV file '{self.filename}' has been successfully created.")
