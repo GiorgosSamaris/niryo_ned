@@ -149,7 +149,7 @@ class Kinematics:
         J_lambda = self.sym.calculateJacobian()
         J = np.array(J_lambda(th_1,th_2,th_3,a_1,a_2,a_4,a_5,a_6))
         inv_J = np.linalg.inv(J)
-        print(np.shape(inv_J))
+        # print(np.shape(inv_J))
         return np.matmul(inv_J,target_velocity)
        
 

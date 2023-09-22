@@ -120,8 +120,6 @@ class KinematicsSymbolic:
 
     def calculateJacobian(self):
         
-
-
         d_var = sp.Matrix([self.s_th[:3]])
         p_0_4 = self.h_0_3 * self.p_3_4
 
