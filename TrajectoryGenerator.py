@@ -68,32 +68,13 @@ class CalculateTrajectory:
         #calculate the middle between the initial and the final point
         p_x =  (p_i+p_f)/2
 
-        # print("[p_x]: ")
-        # print(p_x)
-        # print("\n")
-
+    
         #get initial and final rotation
         r_i = init_pos[:3,:3]
-        # r_f = fin_pos[:3,:3]
-
-        # # rotation matrix
-        # rot = np.matmul(r_i.T,r_f) 
-
-        # # Find eigenvalues and eigenvectors
-        # eigenvalues, eigenvectors = np.linalg.eig(rot)
-        # # print(eigenvectors)
-
-        # # Find the eigenvector corresponding to the eigenvalue of 1
-        # axis_of_rotation = eigenvectors[:, np.isclose(eigenvalues, 1)]
-
-        # # print("Axis of rotation:", axis_of_rotation)
-        
+      
         #step 3
         p_m = htm_m[:3,3]
-        # print("[p_m]: ")
-        # print(p_m)
-        # print("\n")
-
+     
         delta_p = np.abs(p_m - p_x)
 
         # print(delta_p)
@@ -119,11 +100,11 @@ class CalculateTrajectory:
     def writeKinematicSolutions(self,csv_mode='w'):
         self.data.write_csv(csv_mode)
 
-    def circularInterpolationAlgorithm(self):
-        R_circle = 100
-        PC = np.array([0,300,200])
-        P1 = np.array([0,300,400])
-        P2 = np.array([40,300,400])
+    def circularInterpolationAlgorithm(self, R, center, point_1, point_2):
+        R_circle = R
+        PC = center
+        P1 = point_1
+        P2 = point_2
 
         # Creation of Plane and local coordinate system
         a = P1 - PC
@@ -157,7 +138,7 @@ class CalculateTrajectory:
         # Transformation to General Coordinate system
         Trans_vectors = np.tile(PC, (n_poly, 1))
         global_points = Trans_vectors + local_trans
-        wrt = False
+
         htm = np.array([[0,1,0,0],
                         [1,0,0,0],
                         [0,0,-1,0],
@@ -188,46 +169,133 @@ class CalculateTrajectory:
                 self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.01,0.01,0.01])
 
 
+    def curveInterpolationAlgorithm(self,init_point,fin_point)
+        xo = init_point[0]
+        yo = init_point[1]
+        zo = init_point[2]
+        xf = fin_point[0]
+        yf = fin_point[1]
+        zf = fin_point[2]
+        n = 1
+        dis = 1
+        R_max = 1e6
+
+        while R_max > dis:
+            n += 1
+            step_x = (xf - xo) / (n - 1)
+            step_y = (yf - yo) / (n - 1)
+            step_z = (zf - zo) / (n - 1)
+            param_matrix = np.zeros((n, 3))
+            points = np.zeros((n, 3))
+            mid_points = np.zeros((n - 1, 3))
+            mid_curves = np.zeros((n - 1, 3))
+            R = np.zeros((n - 1, 1))
+            
+            for i in range(n):
+                # Parameters Calculation
+                param_matrix[i, 0] = xo + (i - 1) * step_x
+                param_matrix[i, 1] = yo + (i - 1) * step_y
+                param_matrix[i, 2] = zo + (i - 1) * step_z
+
+                # Contour Calculation
+                points[i, 0] = (param_matrix[i, 0]) ** 2  # test function x(x_relative)=x_relative^2
+                points[i, 1] = (param_matrix[i, 1])  # test function y(y_relative)=y_relative
+                points[i, 2] = (param_matrix[i, 2])  # test function z(z_relative)=z_relative
+
+            for i in range(n - 1):
+                # Middle of line
+                mid_points[i, 0] = 0.5 * (points[i, 0] + points[i + 1, 0])
+                mid_points[i, 1] = 0.5 * (points[i, 1] + points[i + 1, 1])
+                mid_points[i, 2] = 0.5 * (points[i, 2] + points[i + 1, 2])
+
+                # Curve at mid_point
+                mid_curves[i, 0] = (0.5 * (param_matrix[i, 0] + param_matrix[i + 1, 0])) ** 2  # mid_point of function
+                mid_curves[i, 1] = (0.5 * (param_matrix[i, 1] + param_matrix[i + 1, 1]))
+                mid_curves[i, 2] = (0.5 * (param_matrix[i, 2] + param_matrix[i + 1, 2]))
+
+                R[i, 0] = np.sqrt(
+                    (mid_curves[i, 0] - mid_points[i, 0]) ** 2 + (mid_curves[i, 1] - mid_points[i, 1]) ** 2 + (
+                                mid_curves[i, 2] - mid_points[i, 2]) ** 2)
+
+                if i > 2:
+                    if R[i, 0] > R[i - 1, 0]:
+                        R_max = R[i, 0]
+            htm = np.array([[0,1,0,0],
+                            [1,0,0,0],
+                            [0,0,-1,0],
+                            [0,0,0,1]])
+
+
+        for i_index,init_point in enumerate(points):
+                    # print("init_point= ",init_point)
+                    htm_i = htm.copy()
+                    htm_i[:3,3] = init_point
+
+
+                    f_index = i_index+1
+
+
+                    if(f_index<points.shape[0]):
+                        final_point = points[f_index]
+                        htm_f = htm.copy()
+                        htm_f[:3,3] = final_point
+                        # print("final_point= ", final_point)
+                    else:
+                        htm_f = htm_i.copy()
+                    # print("htm_i =\n",htm_i)
+                    # print("htm_f =\n",htm_f)
+                    if(i_index==0):
+                        self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.1,0.1,0.1])
+                    else:
+                        self.taylorLinearInterpolationAlgorithm(htm_i,htm_f,[0.1,0.1,0.1])
+
+
+
         
 
 
 
 
 
-t = CalculateTrajectory()
-# t.circularInterpolationAlgorithm()
+# t = CalculateTrajectory()
+# R_circle = 100
+# PC = np.array([0,300,200])
+# P1 = np.array([0,300,400])
+# P2 = np.array([40,300,400])
 
-m_first = np.array([[0,1,0,150],
-                [1,0,0,210],
-                [0,0,-1,100],
-                [0,0,0,1]])
+# t.circularInterpolationAlgorithm(R_circle,PC,P1,P2)
 
-m_second = np.array([[0,1,0,-150],
-                [1,0,0,210],
-                [0,0,-1,100],
-                [0,0,0,1]])
+# m_first = np.array([[0,1,0,150],
+#                 [1,0,0,210],
+#                 [0,0,-1,100],
+#                 [0,0,0,1]])
 
-t.taylorLinearInterpolationAlgorithm(m_first,m_second,[0.01,0.01,0.01])
+# m_second = np.array([[0,1,0,-150],
+#                     [1,0,0,210],
+#                      [0,0,-1,100],
+#                     [0,0,0,1]])
 
-m_third = np.array([[0,1,0,-150],
-                [1,0,0,210],
-                [0,0,-1,300],
-                [0,0,0,1]])
+# t.taylorLinearInterpolationAlgorithm(m_first,m_second,[0.01,0.01,0.01])
 
-t.taylorLinearInterpolationAlgorithm(m_second,m_third,[0.01,0.01,0.01])
+# m_third = np.array([[0,1,0,-150],
+#                 [1,0,0,210],
+#                 [0,0,-1,300],
+#                 [0,0,0,1]])
 
-m_fourth = np.array([[0,1,0,150],
-                [1,0,0,210],
-                [0,0,-1,300],
-                [0,0,0,1]])
+# t.taylorLinearInterpolationAlgorithm(m_second,m_third,[0.01,0.01,0.01])
 
-t.taylorLinearInterpolationAlgorithm(m_third,m_fourth,[0.01,0.01,0.01])
+# m_fourth = np.array([[0,1,0,150],
+#                 [1,0,0,210],
+#                 [0,0,-1,300],
+#                 [0,0,0,1]])
 
-m_first = np.array([[0,1,0,150],
-                [1,0,0,210],
-                [0,0,-1,100],
-                [0,0,0,1]])
+# t.taylorLinearInterpolationAlgorithm(m_third,m_fourth,[0.01,0.01,0.01])
 
-t.taylorLinearInterpolationAlgorithm(m_fourth,m_first,[0.01,0.01,0.01])
+# m_first = np.array([[0,1,0,150],
+#                 [1,0,0,210],
+#                 [0,0,-1,100],
+#                 [0,0,0,1]])
 
-t.writeKinematicSolutions()
+# t.taylorLinearInterpolationAlgorithm(m_fourth,m_first,[0.01,0.01,0.01])
+
+# t.writeKinematicSolutions()
